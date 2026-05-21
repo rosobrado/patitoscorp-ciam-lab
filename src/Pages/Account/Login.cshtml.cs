@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BNFondosLab.Pages.Account;
+namespace CiamLabApp.Pages.Account;
 
 public class LoginModel : PageModel
 {

@@ -1,4 +1,4 @@
-/* Patitos Corp — minimal overrides on top of Tailwind */
+/* CIAM Lab — minimal overrides on top of Tailwind */
 html, body { font-feature-settings: 'cv02','cv03','cv04','cv11'; }
 ::selection { background: #ddd6fe; color: #4c1d95; }
 

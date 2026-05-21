@@ -1,6 +1,9 @@
+@using Microsoft.Extensions.Options
+@inject IOptions<CiamLabApp.BrandingOptions> BrandOpt
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpCtx
 @{
-    var user = HttpCtx.HttpContext?.Items["user"] as BNFondosLab.SiteUser;
+    var brand = BrandOpt.Value;
+    var user = HttpCtx.HttpContext?.Items["user"] as CiamLabApp.SiteUser;
     var isAuth = user != null;
     var path = HttpCtx.HttpContext?.Request.Path.Value ?? "/";
     string Initials(string? n) => string.Concat((n ?? "U").Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => char.ToUpper(p[0])));
@@ -10,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] · Patitos Corp</title>
+    <title>@ViewData["Title"] · @brand.FullName</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@@500;600;700;800&display=swap" rel="stylesheet">
@@ -63,7 +66,7 @@
                         </svg>
                     </span>
                     <span class="font-display font-extrabold tracking-tight text-lg">
-                        Patitos<span class="text-brand-600">Corp</span>
+                        @brand.Name<span class="text-brand-600">@brand.Suffix</span>
                     </span>
                 </a>
                 <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
@@ -107,16 +110,16 @@
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500">
                         <svg viewBox="0 0 64 64" class="h-5 w-5 text-white" fill="currentColor"><path d="M44 18a8 8 0 1 0-7.6 8H40a4 4 0 0 1 4 4v2H22c-7 0-12 5-12 12 0 5 4 9 9 9h24c8 0 14-6 14-14V26c0-4-3-7-7-7h-6v-1z"/></svg>
                     </span>
-                    <span class="font-display font-extrabold text-lg">Patitos<span class="text-brand-600">Corp</span></span>
+                    <span class="font-display font-extrabold text-lg">@brand.Name<span class="text-brand-600">@brand.Suffix</span></span>
                 </div>
-                <p class="text-sm text-slate-600 max-w-xs">Plataforma demo de banca digital y fondos de inversión sobre Microsoft Entra External ID.</p>
+                <p class="text-sm text-slate-600 max-w-xs">@brand.Description</p>
             </div>
             <div>
                 <h4 class="font-display font-bold text-sm uppercase tracking-wider text-slate-500 mb-3">Navegación</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a class="text-slate-700 hover:text-brand-600" href="/">Inicio</a></li>
                     <li><a class="text-slate-700 hover:text-brand-600" href="/Documentos">Mi portafolio</a></li>
-                    <li><a class="text-slate-700 hover:text-brand-600" href="/About">Acerca de Patitos Corp</a></li>
+                    <li><a class="text-slate-700 hover:text-brand-600" href="/About">Acerca de @brand.FullName</a></li>
                 </ul>
             </div>
             <div>
@@ -130,10 +133,11 @@
         </div>
         <div class="border-t border-slate-200/70">
             <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-slate-500 flex flex-col md:flex-row justify-between gap-2">
-                <p>© @DateTime.Now.Year Patitos Corp. Demo no productivo.</p>
-                <p>Construido con ❤ y autenticación segura.</p>
+                <p>© @DateTime.Now.Year @brand.FullName. Demo no productivo.</p>
+                <p>@brand.SupportLine</p>
             </div>
         </div>
     </footer>
 </body>
 </html>
+

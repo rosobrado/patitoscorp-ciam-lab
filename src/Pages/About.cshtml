@@ -1,6 +1,12 @@
 @page
+@inject Microsoft.Extensions.Options.IOptions<CiamLabApp.BrandingOptions> BrandOpt
+@*
+    Demo About page. Replace the copy below with your own.
+    Brand label and full name come from appsettings.json (Branding section).
+*@
 @{
     ViewData["Title"] = "Acerca";
+    var brand = BrandOpt.Value;
 }
 
 <section class="max-w-4xl mx-auto px-6 lg:px-10 pt-16 pb-12">
@@ -12,7 +18,7 @@
         <span class="bg-gradient-to-r from-brand-600 via-pink-500 to-duck-500 bg-clip-text text-transparent">cuidar tu dinero</span>.
     </h1>
     <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-3xl">
-        Patitos Corp es una plataforma demostrativa que reúne las mejores prácticas modernas: identidad CIAM con Microsoft Entra External ID, hosting serverless en Azure App Service, y una experiencia construida en React + Tailwind con foco en accesibilidad y velocidad.
+        @brand.FullName es una plataforma demostrativa que reúne las mejores prácticas modernas: identidad CIAM con Microsoft Entra External ID, hosting en Azure App Service, y una experiencia construida en React + Tailwind con foco en accesibilidad y velocidad.
     </p>
 </section>
 

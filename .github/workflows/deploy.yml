@@ -10,7 +10,7 @@ on:
 
 env:
   DOTNET_VERSION: '8.0.x'
-  PROJECT_PATH:   'src/BNFondosLab.csproj'
+  PROJECT_PATH:   'src/CiamLabApp.csproj'
 
 jobs:
   build-and-deploy:

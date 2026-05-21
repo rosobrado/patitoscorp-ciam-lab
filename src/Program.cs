@@ -1,7 +1,7 @@
 using AspNet.Security.OAuth.Apple;
 using AspNet.Security.OAuth.Twitter;
 using AspNet.Security.OAuth.Yahoo;
-using BNFondosLab;
+using CiamLabApp;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
@@ -9,6 +9,7 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<BrandingOptions>(builder.Configuration.GetSection("Branding"));
 
 // === Auth: cookie principal + multiple external schemes ===
 var authBuilder = builder.Services
@@ -172,7 +173,7 @@ app.Use(async (ctx, next) =>
             DisplayName = ctx.User.FindFirst(ClaimTypes.Name)?.Value
                           ?? ctx.User.FindFirst("name")?.Value
                           ?? ctx.User.FindFirst("preferred_username")?.Value
-                          ?? ctx.User.Identity.Name ?? "Inversionista",
+                          ?? ctx.User.Identity.Name ?? "Usuario",
             Name = ctx.User.Identity.Name ?? "",
             Email = ctx.User.FindFirst(ClaimTypes.Email)?.Value
                     ?? ctx.User.FindFirst("email")?.Value
@@ -211,7 +212,7 @@ app.MapGet("/api/me", (HttpContext ctx) =>
 
 app.Run();
 
-namespace BNFondosLab
+namespace CiamLabApp
 {
     public class SiteUser
     {

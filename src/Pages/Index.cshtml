@@ -1,8 +1,15 @@
 @page
 @model IndexModel
+@inject Microsoft.Extensions.Options.IOptions<CiamLabApp.BrandingOptions> BrandOpt
+@*
+    Demo content. Brand label / tagline / description come from
+    appsettings.json (Branding section). Replace product cards, hero copy
+    and React widgets below with your own — they are illustrative filler.
+*@
 @{
     ViewData["Title"] = "Inicio";
-    var user = HttpContext.Items["user"] as BNFondosLab.SiteUser;
+    var brand = BrandOpt.Value;
+    var user = HttpContext.Items["user"] as CiamLabApp.SiteUser;
     var isAuth = user != null;
 }
 
@@ -18,7 +25,7 @@
                 <span class="bg-gradient-to-r from-brand-600 via-pink-500 to-duck-500 bg-clip-text text-transparent">personalidad</span>.
             </h1>
             <p class="mt-6 text-lg text-slate-600 max-w-2xl leading-relaxed">
-                Patitos Corp es la nueva forma de invertir, ahorrar y administrar tu dinero. Cuentas digitales, fondos transparentes, autenticación moderna — todo en un solo lugar, simple y seguro.
+                @brand.FullName — @brand.Tagline @brand.Description
             </p>
             <div class="mt-9 flex flex-wrap gap-3">
                 @if (isAuth)

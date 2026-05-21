@@ -1,3 +1,3 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-namespace BNFondosLab.Pages;
+namespace CiamLabApp.Pages;
 public class IndexModel : PageModel { public void OnGet() { } }

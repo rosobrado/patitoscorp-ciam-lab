@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BNFondosLab.Pages;
+namespace CiamLabApp.Pages;
 
 public class DocumentosModel : PageModel
 {

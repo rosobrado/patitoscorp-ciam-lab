@@ -1,8 +1,13 @@
 @page
 @model DocumentosModel
+@*
+    Demo dashboard. Account / portfolio data is hardcoded sample content
+    (e.g. "Patitos Cash", "Patitos Invest"). Replace with real product
+    names / data sources when adapting the lab to your scenario.
+*@
 @{
     ViewData["Title"] = "Mi portafolio";
-    var user = HttpContext.Items["user"] as BNFondosLab.SiteUser;
+    var user = HttpContext.Items["user"] as CiamLabApp.SiteUser;
     var isAuth = user != null;
     var docsJson = System.Text.Json.JsonSerializer.Serialize(Model.Docs);
 }

@@ -1,4 +1,4 @@
-# Patitos Corp — Microsoft Entra External ID (CIAM) Lab
+# CIAM Lab — Microsoft Entra External ID end-to-end
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
@@ -6,11 +6,56 @@
 
 End-to-end lab that deploys a fully-branded **Microsoft Entra External ID (CIAM)** sign-in experience in front of an ASP.NET Core 8 Razor Pages app on **Azure App Service**, with a custom OIDC identity provider, Key Vault for the client secret, EasyAuth, and Microsoft Graph branding (banner, square logos, gradient background).
 
-> "*Patitos Corp*" is a fictional brand. Replace the assets in [`branding/`](branding/) and the texts in [`scripts/deploy.sh`](scripts/deploy.sh) to use your own.
+> The lab ships with a **fictional brand ("Patitos Corp")** as default sample copy. Everything brand-related is parameterized — see [Customize for your brand](#-customize-for-your-brand).
 
 | Final result |
 | --- |
 | ![Branded CIAM sign-in](docs/images/verify-ciam.png) |
+
+## 🎨 Customize for your brand
+
+The lab is fully parameterized — you should not have to touch any C# or HTML to re-skin it for your own organization.
+
+### 1. UI text — `src/appsettings.json`
+
+```json
+"Branding": {
+  "Name":        "Contoso",
+  "Suffix":      "Bank",
+  "Tagline":     "Banking that works for you.",
+  "Description": "Contoso Bank — fictional demo running on Microsoft Entra External ID.",
+  "SupportLine": "Built with modern, accessible authentication."
+}
+```
+
+These values appear in the page title, header, footer, login screen and About page. You can also override them per-environment with App Service application settings using the `Branding__Name` / `Branding__Suffix` / etc. naming convention.
+
+### 2. Logos & background — `branding/`
+
+| File | Used for |
+|---|---|
+| `branding/banner.png` | Banner logo on the CIAM sign-in page |
+| `branding/square.png` | Square logo (light theme) |
+| `branding/background.jpg` | Full-page background image |
+
+Replace the bytes, keep the filenames. Re-run `scripts/deploy.sh` (or `deploy.ps1`) with `UPLOAD_BRANDING=true` to push them to your CIAM tenant via Microsoft Graph.
+
+### 3. Deployment parameters — `.env.example`
+
+Copy `.env.example` to `.env` (or export the variables in your shell), edit, then `source .env && ./scripts/deploy.sh`. The most important variables are:
+
+| Variable | What it controls |
+|---|---|
+| `CIAM_TENANT_ID` | Your External ID (CIAM) tenant id |
+| `CIAM_DOMAIN` | e.g. `contoso.ciamlogin.com` |
+| `RG_NAME` / `LOCATION` | Where Azure resources land |
+| `APP_NAME` | App Service site name (auto-generated if empty) |
+| `BRAND_NAME` | Used in the CIAM `signInPageText` |
+| `UPLOAD_BRANDING` | Whether deploy script PATCHes `/organization` branding |
+
+### 4. Demo content (optional)
+
+The hero copy on `Pages/Index.cshtml`, the portfolio mock-up on `Pages/Documentos.cshtml` and the four product cards are sample content. They are flagged with a Razor comment at the top of each page — feel free to delete or rewrite. Brand-specific text inside those samples (e.g. "Patitos Cash") is illustrative filler.
 
 ---
 
@@ -42,7 +87,7 @@ End-to-end lab that deploys a fully-branded **Microsoft Entra External ID (CIAM)
         ▼                                     │ secret reference
 ┌──────────────────────────────────────┐      │
 │  Entra External ID (CIAM tenant)     │      ▼
-│  patitoscorp.ciamlogin.com           │   ┌──────────────────────┐
+│  contoso.ciamlogin.com           │   ┌──────────────────────┐
 │   ─ App registration                 │   │ Azure Key Vault      │
 │   ─ Branding (banner / bg / texts)   │   │ ExtIdClientSecret    │
 │   ─ User flows / IdPs (Email, Goog…) │   └──────────────────────┘
@@ -54,7 +99,7 @@ Two Microsoft Entra tenants are involved:
 | Tenant | Purpose | Example |
 | --- | --- | --- |
 | **Workforce / subscription tenant** | Hosts your Azure subscription, App Service, Key Vault | `contoso.onmicrosoft.com` |
-| **CIAM (External ID) tenant** | Hosts the app registration end users sign in to | `patitoscorp.ciamlogin.com` |
+| **CIAM (External ID) tenant** | Hosts the app registration end users sign in to | `contoso.ciamlogin.com` |
 
 > 📘 **Why two tenants?** External ID separates **customer identities** from your **internal workforce** so customer accounts never appear in your corporate directory.
 > See: [Entra External ID overview](https://learn.microsoft.com/entra/external-id/customers/overview-customers-ciam).
@@ -96,8 +141,8 @@ You also need:
 ### Bash (Linux / macOS / WSL / Cloud Shell)
 
 ```bash
-git clone https://github.com/rxt64/patitoscorp-ciam-lab.git
-cd patitoscorp-ciam-lab
+git clone https://github.com/<your-org>/<your-repo>.git
+cd <your-repo>
 
 az login
 
@@ -111,8 +156,8 @@ bash scripts/deploy.sh
 ### PowerShell (Windows)
 
 ```powershell
-git clone https://github.com/rxt64/patitoscorp-ciam-lab.git
-cd patitoscorp-ciam-lab
+git clone https://github.com/<your-org>/<your-repo>.git
+cd <your-repo>
 
 az login
 
@@ -127,13 +172,13 @@ The script prints a final summary like:
 ```
 ============================================================
  DEPLOY OK
- App URL          : https://extid-lab-z6px9l.azurewebsites.net
- Redirect URI     : https://extid-lab-z6px9l.azurewebsites.net/.auth/login/ExternalID/callback
- Resource group   : rg-patitos-ciam-lab
- App Service      : extid-lab-z6px9l (B1)
+ App URL          : https://extid-lab-XXXXXX.azurewebsites.net
+ Redirect URI     : https://extid-lab-XXXXXX.azurewebsites.net/.auth/login/ExternalID/callback
+ Resource group   : rg-ciam-lab
+ App Service      : extid-lab-XXXXXX (B1)
  Key Vault        : kv-extidlab-xxxx
  CIAM tenant      : 938a8e7d-00ed-46bc-8109-161428d9d67c
- CIAM domain      : patitoscorp.ciamlogin.com
+ CIAM domain      : contoso.ciamlogin.com
  App reg (client) : <guid>
 ============================================================
 ```
@@ -149,7 +194,7 @@ If you prefer to execute the pieces manually (great for learning), follow these 
 ### 1. Create the resource group
 
 ```bash
-az group create -n rg-patitos-ciam-lab -l westeurope
+az group create -n rg-ciam-lab -l westeurope
 ```
 
 📘 [`az group create`](https://learn.microsoft.com/cli/azure/group#az-group-create)
@@ -158,7 +203,7 @@ az group create -n rg-patitos-ciam-lab -l westeurope
 
 ```bash
 az login --tenant <ciam-tenant-id> --allow-no-subscriptions
-APP_ID=$(az ad app create --display-name "Patitos Corp Lab Web" --sign-in-audience AzureADMyOrg --query appId -o tsv)
+APP_ID=$(az ad app create --display-name "CIAM Lab Web" --sign-in-audience AzureADMyOrg --query appId -o tsv)
 APP_OBJ=$(az ad app show --id "$APP_ID" --query id -o tsv)
 
 # Generate a client secret (24-month)
@@ -175,14 +220,14 @@ echo "Client secret: $SECRET   # store immediately, this is the only time you'll
 az login   # back to your subscription tenant
 
 az deployment group create \
-  --resource-group rg-patitos-ciam-lab \
+  --resource-group rg-ciam-lab \
   --template-file infra/azuredeploy.json \
   --parameters \
       appName="extid-lab-mydemo" \
       location="westeurope" \
       ciamTenantId="<ciam-tenant-id>" \
       ciamClientId="$APP_ID" \
-      ciamDomain="patitoscorp.ciamlogin.com"
+      ciamDomain="contoso.ciamlogin.com"
 ```
 
 What this provisions:
@@ -198,11 +243,11 @@ What this provisions:
 ### 4. Store the client secret in Key Vault
 
 ```bash
-KV_NAME=$(az deployment group show -g rg-patitos-ciam-lab -n azuredeploy --query properties.outputs.keyVaultName.value -o tsv)
+KV_NAME=$(az deployment group show -g rg-ciam-lab -n azuredeploy --query properties.outputs.keyVaultName.value -o tsv)
 ME=$(az ad signed-in-user show --query id -o tsv)
 az role assignment create --assignee-object-id "$ME" --assignee-principal-type User \
   --role "Key Vault Secrets Officer" \
-  --scope "$(az keyvault show -n $KV_NAME -g rg-patitos-ciam-lab --query id -o tsv)"
+  --scope "$(az keyvault show -n $KV_NAME -g rg-ciam-lab --query id -o tsv)"
 sleep 20  # wait for RBAC propagation
 az keyvault secret set --vault-name "$KV_NAME" --name ExtIdClientSecret --value "$SECRET"
 ```
@@ -212,7 +257,7 @@ az keyvault secret set --vault-name "$KV_NAME" --name ExtIdClientSecret --value 
 ### 5. Register the redirect URI on the app registration
 
 ```bash
-APP_HOST=$(az deployment group show -g rg-patitos-ciam-lab -n azuredeploy --query properties.outputs.appHostname.value -o tsv)
+APP_HOST=$(az deployment group show -g rg-ciam-lab -n azuredeploy --query properties.outputs.appHostname.value -o tsv)
 REDIRECT="https://$APP_HOST/.auth/login/ExternalID/callback"
 
 az login --tenant <ciam-tenant-id> --allow-no-subscriptions
@@ -224,10 +269,10 @@ az ad app update --id "$APP_ID" --web-redirect-uris "$REDIRECT"
 ### 6. Build & deploy the app
 
 ```bash
-dotnet publish src/BNFondosLab.csproj -c Release -o ./publish
+dotnet publish src/CiamLabApp.csproj -c Release -o ./publish
 ( cd publish && zip -r ../app.zip . )
 az login   # back to subscription tenant
-az webapp deploy -g rg-patitos-ciam-lab -n extid-lab-mydemo --src-path app.zip --type zip
+az webapp deploy -g rg-ciam-lab -n extid-lab-mydemo --src-path app.zip --type zip
 ```
 
 📘 [`az webapp deploy`](https://learn.microsoft.com/cli/azure/webapp#az-webapp-deploy) · [Deploy ZIP package](https://learn.microsoft.com/azure/app-service/deploy-zip)
@@ -242,7 +287,7 @@ ORG=<ciam-tenant-id>
 # Default localization (id=0) holds the language-neutral assets
 curl -X POST "https://graph.microsoft.com/v1.0/organization/$ORG/branding/localizations" \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"id":"0","signInPageText":"Bienvenido a Patitos Corp","backgroundColor":"#1A1B3A"}'
+  -d '{"id":"0","signInPageText":"Bienvenido a CIAM Lab","backgroundColor":"#1A1B3A"}'
 
 # Banner (≤ 280×60, PNG)
 curl -X PUT "https://graph.microsoft.com/v1.0/organization/$ORG/branding/localizations/0/bannerLogo" \
@@ -274,7 +319,7 @@ Click **Ingresar** → you should be redirected to `https://<yourtenant>.ciamlog
 ## Repository layout
 
 ```
-patitoscorp-ciam-lab/
+ciam-lab/
 ├── .github/workflows/deploy.yml         GitHub Actions CI/CD (OIDC -> Azure)
 ├── branding/
 │   ├── banner.png                       280x60 banner logo
@@ -289,7 +334,7 @@ patitoscorp-ciam-lab/
 │   ├── deploy.sh                        end-to-end bash deployment
 │   └── deploy.ps1                       end-to-end PowerShell deployment
 ├── src/                                 ASP.NET Core 8 Razor Pages app
-│   ├── BNFondosLab.csproj
+│   ├── CiamLabApp.csproj
 │   ├── Program.cs                       cookie auth + EasyAuth bridge
 │   ├── Pages/
 │   ├── wwwroot/
@@ -353,7 +398,7 @@ Body: <raw bytes>
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds + zip-deploys on every push to `main`. It uses **OIDC federation** (no long-lived secrets):
 
 1. Create an Entra app registration for GitHub Actions in your subscription tenant.
-2. Add a **federated credential** with subject `repo:rxt64/patitoscorp-ciam-lab:ref:refs/heads/main`.
+2. Add a **federated credential** with subject `repo:<your-org>/<your-repo>:ref:refs/heads/main`.
 3. Grant it `Contributor` on the resource group.
 4. Add three GitHub repo secrets:
    * `AZURE_CLIENT_ID`
@@ -377,14 +422,14 @@ The redirect URI registered in the app registration must exactly match `https://
 <details>
 <summary><strong>App Service shows the default ASP.NET Core welcome page</strong></summary>
 
-The zip didn't deploy correctly. Check `az webapp log tail -g rg-patitos-ciam-lab -n <app>`. Most common cause is publishing **the project folder** instead of the **publish output**. Re-run the build with `dotnet publish -c Release -o ./publish` and zip the contents of `publish/`.
+The zip didn't deploy correctly. Check `az webapp log tail -g rg-ciam-lab -n <app>`. Most common cause is publishing **the project folder** instead of the **publish output**. Re-run the build with `dotnet publish -c Release -o ./publish` and zip the contents of `publish/`.
 
 </details>
 
 <details>
 <summary><strong>Key Vault reference shows up as a literal string</strong></summary>
 
-App Service caches Key Vault references for ~24h. After granting the role, restart the app: `az webapp restart -g rg-patitos-ciam-lab -n <app>`. Verify with `az webapp config appsettings list ... --query "[?name=='ExtId__ClientSecret']"` — the value should appear as `@Microsoft.KeyVault(...)` and the portal Configuration blade should show a green **Resolved** badge.
+App Service caches Key Vault references for ~24h. After granting the role, restart the app: `az webapp restart -g rg-ciam-lab -n <app>`. Verify with `az webapp config appsettings list ... --query "[?name=='ExtId__ClientSecret']"` — the value should appear as `@Microsoft.KeyVault(...)` and the portal Configuration blade should show a green **Resolved** badge.
 
 </details>
 

@@ -1,8 +1,10 @@
 @page
-@model BNFondosLab.Pages.Account.LoginModel
+@model CiamLabApp.Pages.Account.LoginModel
+@inject Microsoft.Extensions.Options.IOptions<CiamLabApp.BrandingOptions> BrandOpt
 @{
     ViewData["Title"] = "Iniciar sesión";
     Layout = "_Layout";
+    var brand = BrandOpt.Value;
     var loginUrl = $"/.auth/login/ExternalID?post_login_redirect_uri={Uri.EscapeDataString(Model.ReturnUrl)}";
 }
 
@@ -15,7 +17,7 @@
                 <span class="inline-flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500 shadow-glow">
                     <svg viewBox="0 0 64 64" class="h-9 w-9 text-white" fill="currentColor"><path d="M44 18a8 8 0 1 0-7.6 8H40a4 4 0 0 1 4 4v2H22c-7 0-12 5-12 12 0 5 4 9 9 9h24c8 0 14-6 14-14V26c0-4-3-7-7-7h-6v-1zm-4 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg>
                 </span>
-                <h1 class="mt-5 font-display text-3xl font-extrabold tracking-tight">Bienvenido a <span class="bg-gradient-to-r from-brand-600 to-pink-500 bg-clip-text text-transparent">Patitos Corp</span></h1>
+                <h1 class="mt-5 font-display text-3xl font-extrabold tracking-tight">Bienvenido a <span class="bg-gradient-to-r from-brand-600 to-pink-500 bg-clip-text text-transparent">@brand.FullName</span></h1>
                 <p class="mt-2 text-sm text-slate-600">Accede con tu cuenta de Google, Microsoft o tu correo electrónico.</p>
             </div>
 
@@ -51,7 +53,7 @@
             </div>
 
             <p class="mt-7 text-center text-sm text-slate-600">¿No tienes cuenta? <a href="@loginUrl" class="font-semibold text-brand-700 hover:text-brand-900">Regístrate gratis</a></p>
-            <p class="mt-4 text-center text-[11px] text-slate-400 leading-relaxed">Al continuar aceptas los <a class="underline hover:text-brand-600" href="#">Términos</a> y la <a class="underline hover:text-brand-600" href="#">Política de Privacidad</a> de Patitos Corp.</p>
+            <p class="mt-4 text-center text-[11px] text-slate-400 leading-relaxed">Al continuar aceptas los <a class="underline hover:text-brand-600" href="#">Términos</a> y la <a class="underline hover:text-brand-600" href="#">Política de Privacidad</a> de @brand.FullName.</p>
         </div>
     </div>
 </section>

@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Patitos Corp CIAM Lab — App Service (Linux, .NET 8) + Plan + Key Vault + System-Assigned Managed Identity. Deploy with `az deployment group create`.",
+    "description": "CIAM Lab — App Service (Linux, .NET 8) + Plan + Key Vault + System-Assigned Managed Identity. Deploy with `az deployment group create`.",
     "documentation": "https://learn.microsoft.com/azure/azure-resource-manager/templates/"
   },
   "parameters": {
@@ -65,7 +65,7 @@
     "ciamDomain": {
       "type": "string",
       "metadata": {
-        "description": "CIAM authority host, e.g. patitoscorp.ciamlogin.com"
+          "description": "CIAM authority host, e.g. contoso.ciamlogin.com"
       }
     }
   },

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Patitos Corp CIAM Lab — End-to-end deployment (PowerShell equivalent of deploy.sh).
+CIAM Lab — End-to-end deployment (PowerShell equivalent of deploy.sh).
 
 .DESCRIPTION
   Same flow as scripts/deploy.sh but native PowerShell, with az CLI + Invoke-RestMethod:
@@ -17,7 +17,7 @@
   CIAM (Entra External ID) tenant id. Required.
 
 .PARAMETER CiamDomain
-  CIAM authority host, e.g. patitoscorp.ciamlogin.com
+CIAM authority host, e.g. contoso.ciamlogin.com
 
 .LINK
   https://learn.microsoft.com/azure/azure-resource-manager/templates/
@@ -26,14 +26,14 @@
 #>
 [CmdletBinding()]
 param(
-  [string]$ResourceGroup = "rg-patitos-ciam-lab",
+    [string]$ResourceGroup    = "rg-ciam-lab",
   [string]$Location      = "westeurope",
   [string]$AppName       = "extid-lab-$([Guid]::NewGuid().ToString('N').Substring(0,6))",
   [string]$Sku           = "B1",
 
   [Parameter(Mandatory=$true)] [string]$CiamTenantId,
   [Parameter(Mandatory=$true)] [string]$CiamDomain,
-  [string]$AppRegDisplay     = "Patitos Corp Lab Web",
+    [string]$AppRegDisplay     = "CIAM Lab Web",
   [string]$InfraSubscription = $null,
   [bool]  $UploadBranding    = $true
 )
@@ -127,7 +127,7 @@ $Pub = Join-Path $OutDir "publish"
 $Zip = Join-Path $OutDir "app.zip"
 if (Test-Path $Pub) { Remove-Item $Pub -Recurse -Force }
 if (Test-Path $Zip) { Remove-Item $Zip -Force }
-dotnet publish (Join-Path $SrcDir "BNFondosLab.csproj") -c Release -o $Pub --nologo | Out-Null
+dotnet publish (Join-Path $SrcDir "CiamLabApp.csproj") -c Release -o $Pub --nologo | Out-Null
 Compress-Archive -Path "$Pub\*" -DestinationPath $Zip -Force
 Ok "Package: $((Get-Item $Zip).Length / 1MB) MB"
 
@@ -140,7 +140,8 @@ if ($UploadBranding -and (Test-Path $BrandDir)) {
   Log "Uploading branding via Graph"
   $org = $CiamTenantId
   try {
-    $localBody = @{ id="0"; signInPageText="Bienvenido a Patitos Corp"; usernameHintText="correo@dominio.com"; backgroundColor="#1A1B3A" } | ConvertTo-Json
+    $BrandName = if ($env:BRAND_NAME) { $env:BRAND_NAME } else { "CIAM Lab" }
+$localBody = @{ id="0"; signInPageText="Bienvenido a $BrandName"; usernameHintText="correo@dominio.com"; backgroundColor="#1A1B3A" } | ConvertTo-Json
     Invoke-RestMethod -Method Post -Uri "https://graph.microsoft.com/v1.0/organization/$org/branding/localizations" -Headers $Headers -ContentType "application/json" -Body $localBody | Out-Null
   } catch { } # already exists -> ignore
 

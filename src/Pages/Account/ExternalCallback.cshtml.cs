@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 
-namespace BNFondosLab.Pages.Account;
+namespace CiamLabApp.Pages.Account;
 
 public class ExternalCallbackModel : PageModel
 {

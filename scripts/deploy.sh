@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Patitos Corp CIAM Lab — End-to-end deployment
+# CIAM Lab — End-to-end deployment
 # =============================================================================
 # This script:
 #   1. Creates the Resource Group
@@ -26,15 +26,16 @@
 set -euo pipefail
 
 # --------------------------- CONFIG (override via env) -----------------------
-RG_NAME="${RG_NAME:-rg-patitos-ciam-lab}"
+RG_NAME="${RG_NAME:-rg-ciam-lab}"
 LOCATION="${LOCATION:-westeurope}"
 APP_NAME="${APP_NAME:-extid-lab-$(LC_ALL=C tr -dc a-z0-9 </dev/urandom | head -c6)}"
 SKU="${SKU:-B1}"
 
 # CIAM (Entra External ID) tenant details
 CIAM_TENANT_ID="${CIAM_TENANT_ID:?Set CIAM_TENANT_ID, e.g. 938a8e7d-00ed-46bc-8109-161428d9d67c}"
-CIAM_DOMAIN="${CIAM_DOMAIN:?Set CIAM_DOMAIN, e.g. patitoscorp.ciamlogin.com}"
-APP_REG_DISPLAY="${APP_REG_DISPLAY:-Patitos Corp Lab Web}"
+CIAM_DOMAIN="${CIAM_DOMAIN:?Set CIAM_DOMAIN, e.g. contoso.ciamlogin.com}"
+APP_REG_DISPLAY="${APP_REG_DISPLAY:-CIAM Lab Web}"
+BRAND_NAME="${BRAND_NAME:-CIAM Lab}"
 
 # Subscription tenant (where infra lives) — usually different from CIAM tenant
 INFRA_SUBSCRIPTION="${INFRA_SUBSCRIPTION:-$(az account show --query id -o tsv)}"
@@ -150,7 +151,7 @@ log "Building .NET 8 app"
 PUB_DIR="$OUT_DIR/publish"
 ZIP_FILE="$OUT_DIR/app.zip"
 rm -rf "$PUB_DIR" "$ZIP_FILE"
-dotnet publish "$SRC_DIR/BNFondosLab.csproj" -c Release -o "$PUB_DIR" --nologo >/dev/null
+dotnet publish "$SRC_DIR/CiamLabApp.csproj" -c Release -o "$PUB_DIR" --nologo >/dev/null
 ( cd "$PUB_DIR" && zip -r "$ZIP_FILE" . >/dev/null )
 ok "Package: $(du -h "$ZIP_FILE" | cut -f1)"
 
@@ -166,7 +167,7 @@ if [ "$UPLOAD_BRANDING" = "true" ] && [ -d "$BRAND_DIR" ]; then
   # Ensure default localization exists (id=0)
   curl -sS -X POST "https://graph.microsoft.com/v1.0/organization/$ORG/branding/localizations" \
     -H "Authorization: Bearer $CIAM_TOKEN" -H "Content-Type: application/json" \
-    -d '{"id":"0","signInPageText":"Bienvenido a Patitos Corp","usernameHintText":"correo@dominio.com","backgroundColor":"#1A1B3A"}' \
+    -d "{\"id\":\"0\",\"signInPageText\":\"Bienvenido a ${BRAND_NAME}\",\"usernameHintText\":\"correo@dominio.com\",\"backgroundColor\":\"#1A1B3A\"}" \
     >/dev/null 2>&1 || true
 
   upload_branding_asset() {
