@@ -5,7 +5,7 @@
     ViewData["Title"] = "Iniciar sesión";
     Layout = "_Layout";
     var brand = BrandOpt.Value;
-    var loginUrl = $"/.auth/login/ExternalID?post_login_redirect_uri={Uri.EscapeDataString(Model.ReturnUrl)}";
+    var loginUrl = $"/.auth/login/ExternalID?post_login_redirect_uri={Uri.EscapeDataString(Model.ReturnUrl)}&prompt=login";
 }
 
 <section class="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-16">
