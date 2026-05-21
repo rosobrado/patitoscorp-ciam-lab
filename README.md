@@ -12,6 +12,56 @@ End-to-end lab that deploys a fully-branded **Microsoft Entra External ID (CIAM)
 | --- |
 | ![Branded CIAM sign-in](docs/images/verify-ciam.png) |
 
+## Use case & user flow
+
+Reference implementation for **Customer Identity & Access Management (CIAM)** using **Microsoft Entra External ID** as the identity provider for a customer-facing web app. The fictional brand "Patitos Corp" is a digital-finance demo (cash, invest, ETFs, etc.) used as the canvas to showcase how a real consumer product would integrate sign-in/sign-up, session management, and gated content.
+
+**Audience:** identity architects, developers, and PoC builders who need a runnable sample showing:
+
+- External ID tenant + customer-facing user flow (sign-up + sign-in in one).
+- App Service hosting with **EasyAuth (custom OIDC)** — no auth code in the app.
+- Public marketing pages vs. authenticated portfolio pages.
+- Logout via the platform's `/.auth/logout` endpoint.
+- Branding parameterized via `appsettings.json` so the same lab can be rebranded without touching code.
+
+### Flow diagram
+
+```mermaid
+flowchart LR
+  A[Visitor lands on /] --> B{Authenticated?}
+  B -- No --> C[Public home: hero, products, CTA]
+  C --> D[Click 'Mi portafolio' / 'Iniciar sesión']
+  D --> E[/Account/Login → loginUrl/]
+  E --> F[EasyAuth redirects to External ID]
+  F --> G[patitoscorp.ciamlogin.com<br/>sign-up or sign-in]
+  G --> H[OIDC callback /.auth/login/ExternalID/callback]
+  H --> I[EasyAuth issues session cookie]
+  I --> J[/Documentos — gated portfolio/]
+  J --> K[Click 'Cerrar sesión']
+  K --> L[GET /Account/Logout → /.auth/logout]
+  L --> M[Session cleared, redirect to /]
+  B -- Yes --> J
+```
+
+### Step by step
+
+1. **Anonymous landing (`/`)** — Marketing home renders product cards (Patitos Cash, Invest, Empresarial, Care) and a CTA. No auth required.
+2. **Trigger sign-in** — User clicks *Iniciar sesión* or tries to access `/Documentos`. App routes to `/Account/Login` which builds the EasyAuth login URL with `post_login_redirect_uri`.
+3. **Federated auth at External ID** — EasyAuth redirects the browser to the CIAM tenant (`patitoscorp.ciamlogin.com`) where the user **signs up or signs in** via the configured user flow (email + password / OTP).
+4. **Callback + session** — External ID returns the auth code to `/.auth/login/ExternalID/callback`. EasyAuth exchanges it for tokens and sets the `AppServiceAuthSession` cookie. The app receives identity claims via request headers.
+5. **Authenticated portfolio (`/Documentos`)** — Protected page reads claims and renders the user's mock portfolio (balance cards, document list, claims viewer).
+6. **Logout** — User clicks *Cerrar sesión* (anchor → `GET /Account/Logout`). The page redirects to `/.auth/logout?post_logout_redirect_uri=/`, clearing the EasyAuth cookie and bouncing back to the public home.
+
+### What the lab demonstrates
+
+- **Zero auth code in the app** — all token handling lives in EasyAuth; the app just reads claim headers.
+- **Custom OIDC IdP config** pointed at an External ID tenant (not the built-in Microsoft provider).
+- **Mixed public/private routing** in the same app.
+- **Idempotent logout** via GET (avoids antiforgery 400s).
+- **Brand abstraction** — change the `Branding` section in `appsettings.json` to re-skin the lab for any tenant/customer demo.
+
+---
+
 ## 🎨 Customize for your brand
 
 The lab is fully parameterized — you should not have to touch any C# or HTML to re-skin it for your own organization.
@@ -61,17 +111,18 @@ The hero copy on `Pages/Index.cshtml`, the portfolio mock-up on `Pages/Documento
 
 ## Table of contents
 
-1. [Architecture](#architecture)
-2. [What you'll build](#what-youll-build)
-3. [Prerequisites](#prerequisites)
-4. [Quick start (one command)](#quick-start-one-command)
-5. [Manual step-by-step tutorial](#manual-step-by-step-tutorial)
-6. [Repository layout](#repository-layout)
-7. [ARM template reference](#arm-template-reference)
-8. [Branding via Microsoft Graph](#branding-via-microsoft-graph)
-9. [CI/CD with GitHub Actions](#cicd-with-github-actions)
-10. [Troubleshooting](#troubleshooting)
-11. [Useful documentation](#useful-documentation)
+1. [Use case & user flow](#use-case--user-flow)
+2. [Architecture](#architecture)
+3. [What you'll build](#what-youll-build)
+4. [Prerequisites](#prerequisites)
+5. [Quick start (one command)](#quick-start-one-command)
+6. [Manual step-by-step tutorial](#manual-step-by-step-tutorial)
+7. [Repository layout](#repository-layout)
+8. [ARM template reference](#arm-template-reference)
+9. [Branding via Microsoft Graph](#branding-via-microsoft-graph)
+10. [CI/CD with GitHub Actions](#cicd-with-github-actions)
+11. [Troubleshooting](#troubleshooting)
+12. [Useful documentation](#useful-documentation)
 
 ---
 
