@@ -5,7 +5,12 @@
     ViewData["Title"] = "Iniciar sesión";
     Layout = "_Layout";
     var brand = BrandOpt.Value;
-    var loginUrl = $"/.auth/login/ExternalID?post_login_redirect_uri={Uri.EscapeDataString(Model.ReturnUrl)}&prompt=login";
+    var ru = Uri.EscapeDataString(Model.ReturnUrl);
+    var loginUrl     = $"/.auth/login/ExternalID?post_login_redirect_uri={ru}&prompt=login";
+    var signupUrl    = $"/.auth/login/ExternalID?post_login_redirect_uri={ru}&prompt=create";
+    var googleUrl    = $"/.auth/login/ExternalID?post_login_redirect_uri={ru}&domain_hint=google.com";
+    var microsoftUrl = $"/.auth/login/ExternalID?post_login_redirect_uri={ru}&domain_hint=live.com";
+    var emailUrl     = loginUrl;
 }
 
 <section class="relative min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-16">
@@ -38,21 +43,21 @@
             </div>
 
             <div class="mt-6 grid grid-cols-3 gap-3 text-center">
-                <div class="rounded-xl border border-slate-200 bg-white py-3">
+                <a href="@googleUrl" class="rounded-xl border border-slate-200 bg-white py-3 hover:border-brand-500 hover:shadow-md transition" title="Continuar con Google">
                     <svg viewBox="0 0 24 24" class="h-5 w-5 mx-auto" fill="none"><path fill="#EA4335" d="M12 11v3.6h5.1c-.2 1.3-1.5 3.7-5.1 3.7-3.1 0-5.6-2.5-5.6-5.7s2.5-5.7 5.6-5.7c1.7 0 2.9.7 3.6 1.4l2.4-2.3C16.5 4.6 14.4 3.6 12 3.6c-4.7 0-8.4 3.8-8.4 8.4S7.3 20.4 12 20.4c4.8 0 8-3.4 8-8.2 0-.6 0-1-.1-1.5H12z"/></svg>
                     <div class="text-[10px] font-semibold text-slate-500 mt-1">Google</div>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white py-3">
+                </a>
+                <a href="@microsoftUrl" class="rounded-xl border border-slate-200 bg-white py-3 hover:border-brand-500 hover:shadow-md transition" title="Continuar con Microsoft">
                     <svg viewBox="0 0 24 24" class="h-5 w-5 mx-auto"><rect x="3" y="3" width="8" height="8" fill="#F25022"/><rect x="13" y="3" width="8" height="8" fill="#7FBA00"/><rect x="3" y="13" width="8" height="8" fill="#00A4EF"/><rect x="13" y="13" width="8" height="8" fill="#FFB900"/></svg>
                     <div class="text-[10px] font-semibold text-slate-500 mt-1">Microsoft</div>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white py-3">
+                </a>
+                <a href="@emailUrl" class="rounded-xl border border-slate-200 bg-white py-3 hover:border-brand-500 hover:shadow-md transition" title="Continuar con email">
                     <svg viewBox="0 0 24 24" class="h-5 w-5 mx-auto" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     <div class="text-[10px] font-semibold text-slate-500 mt-1">Email</div>
-                </div>
+                </a>
             </div>
 
-            <p class="mt-7 text-center text-sm text-slate-600">¿No tienes cuenta? <a href="@loginUrl" class="font-semibold text-brand-700 hover:text-brand-900">Regístrate gratis</a></p>
+            <p class="mt-7 text-center text-sm text-slate-600">¿No tienes cuenta? <a href="@signupUrl" class="font-semibold text-brand-700 hover:text-brand-900">Regístrate gratis</a></p>
             <p class="mt-4 text-center text-[11px] text-slate-400 leading-relaxed">Al continuar aceptas los <a class="underline hover:text-brand-600" href="#">Términos</a> y la <a class="underline hover:text-brand-600" href="#">Política de Privacidad</a> de @brand.FullName.</p>
         </div>
     </div>
