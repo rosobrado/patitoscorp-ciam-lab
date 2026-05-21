@@ -1,6 +1,5 @@
-@using Microsoft.Extensions.Options
-@inject IOptions<CiamLabApp.BrandingOptions> BrandOpt
-@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpCtx
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpCtx
+@inject Microsoft.Extensions.Options.IOptions<CiamLabApp.BrandingOptions> BrandOpt
 @{
     var brand = BrandOpt.Value;
     var user = HttpCtx.HttpContext?.Items["user"] as CiamLabApp.SiteUser;
@@ -19,67 +18,100 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif']
-                    },
-                    colors: {
-                        brand: { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9',800:'#5b21b6',900:'#4c1d95' },
-                        duck:  { 300:'#fde68a',400:'#fcd34d',500:'#fbbf24',600:'#f59e0b' }
-                    },
-                    boxShadow: {
-                        glow: '0 25px 60px -20px rgba(124,58,237,.45)',
-                        soft: '0 10px 40px -10px rgba(15,23,42,.12)'
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: {
+            fontFamily: { sans: ['Inter','system-ui','sans-serif'], display: ['"Plus Jakarta Sans"','Inter','system-ui','sans-serif'] },
+            colors: {
+                brand: { 50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9',800:'#5b21b6',900:'#4c1d95' },
+                duck:  { 300:'#fde68a',400:'#fcd34d',500:'#fbbf24',600:'#f59e0b' }
+            },
+            boxShadow: { glow: '0 25px 60px -20px rgba(124,58,237,.45)', soft: '0 10px 40px -10px rgba(15,23,42,.12)' }
+        }}}
     </script>
-    <link rel="stylesheet" href="~/css/site.css?v=20260520a" />
+    <link rel="stylesheet" href="~/css/site.css?v=20260520b" />
     <script type="importmap">
-    {
-        "imports": {
-            "react": "https://esm.sh/react@18.3.1",
-            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-            "htm": "https://esm.sh/htm@3.1.1"
-        }
-    }
+    { "imports": { "react": "https://esm.sh/react@18.3.1", "react-dom/client": "https://esm.sh/react-dom@18.3.1/client", "htm": "https://esm.sh/htm@3.1.1" } }
     </script>
 </head>
 <body class="min-h-full bg-slate-50 text-slate-900 font-sans antialiased">
+
+    <!-- TOP DEMO RIBBON -->
+    <div class="relative z-40 bg-gradient-to-r from-slate-900 via-brand-800 to-slate-900 text-white text-xs">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 h-9 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2 min-w-0">
+                <span class="relative flex h-2 w-2 shrink-0">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                </span>
+                <span class="font-semibold tracking-wide truncate">Demo en vivo · Microsoft Entra External ID (CIAM)</span>
+                <a href="https://learn.microsoft.com/entra/external-id/customers/overview-customers-ciam" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 transition text-[11px] font-medium">
+                    Ver docs
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><polyline points="7 7 17 7 17 17"/></svg>
+                </a>
+            </div>
+            <div class="hidden md:flex items-center gap-3 text-[11px] text-white/70">
+                <span>Tenant: <span class="font-mono text-white/90">patitoscorp.ciamlogin.com</span></span>
+                <span class="h-3 w-px bg-white/20"></span>
+                <span>Hosted on Azure App Service</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- BAC-STYLE UTILITY BAR -->
+    <div class="bg-white border-b border-slate-200/70 text-[12.5px]">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 h-10 flex items-center justify-between">
+            <nav class="flex items-center gap-1 text-slate-600">
+                <a href="/" class="px-3 py-1.5 rounded-md font-semibold text-brand-700 bg-brand-50">Personas</a>
+                <a href="#" class="px-3 py-1.5 rounded-md hover:bg-slate-100 transition">PYMES</a>
+                <a href="#" class="px-3 py-1.5 rounded-md hover:bg-slate-100 transition">Empresas</a>
+                <a href="#" class="px-3 py-1.5 rounded-md hover:bg-slate-100 transition">Private Banking</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4 text-slate-500">
+                <a href="#" class="hover:text-brand-700 transition">Ayuda</a>
+                <a href="#" class="hover:text-brand-700 transition">Sucursales</a>
+                <span class="inline-flex items-center gap-1.5">
+                    <span class="inline-block h-3 w-4 rounded-sm bg-gradient-to-b from-red-600 via-white to-blue-700 shadow-sm"></span>
+                    <span>Costa Rica</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
     <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div class="absolute -top-32 -left-32 w-[42rem] h-[42rem] bg-brand-400/30 blur-3xl rounded-full"></div>
         <div class="absolute -top-20 right-0 w-[38rem] h-[38rem] bg-duck-400/30 blur-3xl rounded-full"></div>
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[26rem] bg-pink-300/20 blur-3xl rounded-full"></div>
     </div>
 
+    <!-- MAIN HEADER -->
     <header class="sticky top-0 z-30">
-        <div class="backdrop-blur-xl bg-white/70 border-b border-slate-200/60">
-            <div class="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
-                <a href="/" class="flex items-center gap-2.5 group">
-                    <span class="relative inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500 shadow-glow">
-                        <svg viewBox="0 0 64 64" class="h-6 w-6 text-white" fill="currentColor" aria-hidden="true">
-                            <path d="M44 18a8 8 0 1 0-7.6 8H40a4 4 0 0 1 4 4v2H22c-7 0-12 5-12 12 0 5 4 9 9 9h24c8 0 14-6 14-14V26c0-4-3-7-7-7h-6v-1zm-4 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/>
-                        </svg>
+        <div class="backdrop-blur-xl bg-white/85 border-b border-slate-200/60 shadow-sm">
+            <div class="max-w-7xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between gap-6">
+                <a href="/" class="flex items-center gap-2.5 group shrink-0">
+                    <span class="relative inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500 shadow-glow">
+                        <svg viewBox="0 0 64 64" class="h-6 w-6 text-white" fill="currentColor"><path d="M44 18a8 8 0 1 0-7.6 8H40a4 4 0 0 1 4 4v2H22c-7 0-12 5-12 12 0 5 4 9 9 9h24c8 0 14-6 14-14V26c0-4-3-7-7-7h-6v-1zm-4 4a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg>
                     </span>
-                    <span class="font-display font-extrabold tracking-tight text-lg">
-                        @brand.Name<span class="text-brand-600">@brand.Suffix</span>
-                    </span>
+                    <span class="font-display font-extrabold tracking-tight text-lg leading-none">@brand.Name<span class="text-brand-600">@brand.Suffix</span></span>
                 </a>
-                <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-                    <a href="/" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Inicio</a>
-                    <a href="/Cuenta" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Mi cuenta</a>
-                    <a href="/About" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Acerca</a>
+
+                <nav class="hidden lg:flex items-center gap-0.5 text-sm font-semibold text-slate-700">
+                    <a href="/#productos" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Cuentas</a>
+                    <a href="/#productos" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Tarjetas</a>
+                    <a href="/#productos" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Préstamos</a>
+                    <a href="#" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Ahorros</a>
+                    <a href="#" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Seguros</a>
+                    <a href="/About" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-brand-700 transition">Nosotros</a>
                 </nav>
-                <div class="flex items-center gap-2">
+
+                <div class="flex items-center gap-2 shrink-0">
                     @if (isAuth)
                     {
+                        <a href="/Cuenta" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition shadow-soft">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Banca en Línea
+                        </a>
                         <div class="hidden sm:flex items-center gap-2 pl-2 pr-1 py-1 rounded-full bg-white border border-slate-200 shadow-soft">
                             <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-duck-500 text-white text-xs font-bold">@Initials(user!.DisplayName)</span>
-                            <span class="text-sm font-medium pr-1">@user!.DisplayName</span>
+                            <span class="text-sm font-medium pr-1 max-w-[140px] truncate">@user!.DisplayName</span>
                             <a href="/Account/Logout" class="ml-1 inline-flex items-center justify-center h-7 w-7 rounded-full hover:bg-slate-100 transition" title="Cerrar sesión" aria-label="Cerrar sesión">
                                 <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                             </a>
@@ -87,9 +119,10 @@
                     }
                     else
                     {
-                        <a href="/Account/Login?returnUrl=@Uri.EscapeDataString(path)" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-brand-700 transition shadow-soft">
-                            Ingresar
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        <a href="/.auth/login/ExternalID?post_login_redirect_uri=/Bienvenido&prompt=create" class="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border-2 border-brand-600 text-brand-700 text-sm font-bold hover:bg-brand-50 transition">Abrir cuenta</a>
+                        <a href="/Account/Login?returnUrl=@Uri.EscapeDataString(path)" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition shadow-soft">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Banca en Línea
                         </a>
                     }
                 </div>
@@ -97,45 +130,67 @@
         </div>
     </header>
 
-    <main>
-        @RenderBody()
-    </main>
+    <main>@RenderBody()</main>
 
-    <footer class="mt-24 border-t border-slate-200/70 bg-white/60 backdrop-blur">
-        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid md:grid-cols-3 gap-10">
-            <div>
-                <div class="flex items-center gap-2.5 mb-3">
-                    <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500">
+    <footer class="mt-24 bg-slate-900 text-slate-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10 py-14 grid md:grid-cols-2 lg:grid-cols-5 gap-10">
+            <div class="lg:col-span-2">
+                <div class="flex items-center gap-2.5 mb-4">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 via-pink-500 to-duck-500">
                         <svg viewBox="0 0 64 64" class="h-5 w-5 text-white" fill="currentColor"><path d="M44 18a8 8 0 1 0-7.6 8H40a4 4 0 0 1 4 4v2H22c-7 0-12 5-12 12 0 5 4 9 9 9h24c8 0 14-6 14-14V26c0-4-3-7-7-7h-6v-1z"/></svg>
                     </span>
-                    <span class="font-display font-extrabold text-lg">@brand.Name<span class="text-brand-600">@brand.Suffix</span></span>
+                    <span class="font-display font-extrabold text-lg text-white">@brand.Name<span class="text-duck-400">@brand.Suffix</span></span>
                 </div>
-                <p class="text-sm text-slate-600 max-w-xs">@brand.Description</p>
+                <p class="text-sm text-slate-400 max-w-sm leading-relaxed">@brand.Description</p>
             </div>
             <div>
-                <h4 class="font-display font-bold text-sm uppercase tracking-wider text-slate-500 mb-3">Navegación</h4>
+                <h4 class="font-display font-bold text-sm uppercase tracking-wider text-white mb-3">Productos</h4>
                 <ul class="space-y-2 text-sm">
-                    <li><a class="text-slate-700 hover:text-brand-600" href="/">Inicio</a></li>
-                    <li><a class="text-slate-700 hover:text-brand-600" href="/Cuenta">Mi cuenta</a></li>
-                    <li><a class="text-slate-700 hover:text-brand-600" href="/About">Acerca de @brand.FullName</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="/#productos">Cuenta Pato</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="/#productos">Tarjeta Pato</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="/#productos">Patitos Save</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="/#productos">Crédito Pato</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-display font-bold text-sm uppercase tracking-wider text-slate-500 mb-3">Tecnología</h4>
-                <ul class="space-y-2 text-sm text-slate-600">
-                    <li>Microsoft Entra External ID (CIAM)</li>
+                <h4 class="font-display font-bold text-sm uppercase tracking-wider text-white mb-3">Banco</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a class="text-slate-400 hover:text-white" href="/About">Sobre nosotros</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="/Cuenta">Banca en Línea</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="#">Sucursales</a></li>
+                    <li><a class="text-slate-400 hover:text-white" href="#">Quejas y sugerencias</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-display font-bold text-sm uppercase tracking-wider text-white mb-3">Tecnología</h4>
+                <ul class="space-y-2 text-sm text-slate-400">
+                    <li>Microsoft Entra External ID</li>
                     <li>Azure App Service · .NET 8</li>
                     <li>React 18 · Tailwind CSS</li>
                 </ul>
             </div>
         </div>
-        <div class="border-t border-slate-200/70">
-            <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-slate-500 flex flex-col md:flex-row justify-between gap-2">
-                <p>© @DateTime.Now.Year @brand.FullName. Demo no productivo.</p>
-                <p>@brand.SupportLine</p>
+        <div class="border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 text-xs text-slate-400 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                <p>San José, Costa Rica · @brand.SupportLine</p>
+                <p>© @DateTime.Now.Year @brand.FullName. Demo no productivo · Sin valor financiero real.</p>
+            </div>
+        </div>
+
+        <!-- BOTTOM "MADE BY" RIBBON -->
+        <div class="bg-black/40 border-t border-white/5">
+            <div class="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-[11.5px] text-slate-400 text-center">
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="h-3.5 w-3.5 text-pink-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>
+                    Demo personal hecho por
+                    <a href="https://www.linkedin.com/in/rsobrado/" target="_blank" rel="noopener" class="font-semibold text-white hover:text-duck-400 transition">Ricardo Sobrado</a>
+                </span>
+                <span class="hidden sm:inline text-slate-600">·</span>
+                <span>código abierto en <a href="https://github.com/rosobrado/patitoscorp-ciam-lab" target="_blank" rel="noopener" class="font-semibold text-white hover:text-duck-400 transition">GitHub</a></span>
+                <span class="hidden sm:inline text-slate-600">·</span>
+                <span>no afiliado a ningún banco real</span>
             </div>
         </div>
     </footer>
 </body>
 </html>
-
