@@ -24,6 +24,17 @@ Reference implementation for **Customer Identity & Access Management (CIAM)** us
 - Logout via the platform's `/.auth/logout` endpoint.
 - Branding parameterized via `appsettings.json` so the same lab can be rebranded without touching code.
 
+### Self-service registration & Bring Your Own Identity (BYOI)
+
+The lab is **open to any visitor**: there is no pre-provisioning, no invitation, no admin approval. Anyone hitting *Iniciar sesión* who doesn't yet have an account can self-register from the same screen.
+
+Two ways in:
+
+- **Create a brand-new local account** — email + password (with email OTP verification). The user is created on the fly inside the External ID tenant and lives there as a customer identity.
+- **Bring your own identity (BYOI)** — sign in with an existing identity from a federated identity provider (Google, Facebook, Apple, GitHub, generic OIDC/SAML, or any other IdP configured on the tenant's user flow). No new password is created; External ID federates the existing credential and stores a linked customer profile.
+
+Both paths land on the same authenticated session and the same `/Documentos` page — the app does not care *how* the user authenticated, only that EasyAuth issued a valid session.
+
 ### Flow diagram
 
 ```mermaid
