@@ -1,0 +1,175 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+    var user = HttpContext.Items["user"] as BNFondosLab.SiteUser;
+    var isAuth = user != null;
+}
+
+<section class="relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 pt-16 pb-20 lg:pt-24 lg:pb-32 grid lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur border border-slate-200 text-xs font-semibold text-brand-700 shadow-soft">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Demo en vivo · Microsoft Entra External ID
+            </span>
+            <h1 class="mt-5 font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight">
+                Banca digital con
+                <span class="bg-gradient-to-r from-brand-600 via-pink-500 to-duck-500 bg-clip-text text-transparent">personalidad</span>.
+            </h1>
+            <p class="mt-6 text-lg text-slate-600 max-w-2xl leading-relaxed">
+                Patitos Corp es la nueva forma de invertir, ahorrar y administrar tu dinero. Cuentas digitales, fondos transparentes, autenticación moderna — todo en un solo lugar, simple y seguro.
+            </p>
+            <div class="mt-9 flex flex-wrap gap-3">
+                @if (isAuth)
+                {
+                    <a href="/Documentos" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 text-white font-semibold shadow-glow hover:bg-brand-700 transition">
+                        Ver mi portafolio
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="#productos" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white border border-slate-200 font-semibold hover:border-brand-400 transition">
+                        Ver productos
+                    </a>
+                }
+                else
+                {
+                    <a href="/Account/Login?returnUrl=/Documentos" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 text-white font-semibold shadow-glow hover:bg-brand-700 transition">
+                        Crear cuenta gratis
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="#productos" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white border border-slate-200 font-semibold hover:border-brand-400 transition">
+                        Conocer más
+                    </a>
+                }
+            </div>
+            <div class="mt-10 flex items-center gap-6">
+                <div class="flex -space-x-2">
+                    <div class="h-9 w-9 rounded-full bg-gradient-to-br from-brand-500 to-pink-400 ring-2 ring-white"></div>
+                    <div class="h-9 w-9 rounded-full bg-gradient-to-br from-duck-500 to-orange-400 ring-2 ring-white"></div>
+                    <div class="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 ring-2 ring-white"></div>
+                    <div class="h-9 w-9 rounded-full bg-gradient-to-br from-sky-500 to-indigo-400 ring-2 ring-white"></div>
+                </div>
+                <p class="text-sm text-slate-600"><span class="font-semibold text-slate-900">+178k patitos</span> ya están invirtiendo con nosotros.</p>
+            </div>
+        </div>
+
+        <!-- React stats card -->
+        <div class="lg:col-span-5">
+            <div id="hero-card" class="relative"></div>
+        </div>
+    </div>
+</section>
+
+<section id="productos" class="relative py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="text-center max-w-2xl mx-auto">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600">Productos</span>
+            <h2 class="mt-2 font-display text-4xl lg:text-5xl font-extrabold tracking-tight">Todo lo que necesitas, en un nido</h2>
+            <p class="mt-4 text-slate-600">Diseñado para personas que quieren controlar su dinero sin complicaciones, con la tranquilidad que brinda Microsoft Entra.</p>
+        </div>
+        <div id="products" class="mt-14"></div>
+    </div>
+</section>
+
+<section class="py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-pink-500 p-10 lg:p-16 text-white shadow-glow">
+            <div class="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-duck-500/40 blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-pink-300/30 blur-3xl"></div>
+            <div class="relative grid lg:grid-cols-2 gap-10 items-center">
+                <div>
+                    <h3 class="font-display text-3xl lg:text-4xl font-extrabold">Empieza en 60 segundos</h3>
+                    <p class="mt-4 text-white/85 text-lg">Crea tu cuenta con Google, Microsoft o tu email favorito. Sin papeleo, sin filas, sin complicaciones.</p>
+                </div>
+                <div class="flex lg:justify-end">
+                    <a href="/Account/Login?returnUrl=/Documentos" class="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-white text-slate-900 font-semibold hover:bg-duck-500 hover:text-slate-900 transition shadow-soft">
+                        Crear mi cuenta
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="module">
+    import { createRoot } from 'react-dom/client';
+    import { createElement, useEffect, useState } from 'react';
+    import htm from 'htm';
+    const html = htm.bind(createElement);
+
+    function Stat({ num, label, accent }) {
+        return html`<div class="rounded-2xl bg-white/80 backdrop-blur border border-slate-200 p-5 shadow-soft">
+            <div class="text-3xl font-display font-extrabold ${accent || 'text-slate-900'}">${num}</div>
+            <div class="text-xs font-medium text-slate-500 mt-1">${label}</div>
+        </div>`;
+    }
+
+    function HeroCard() {
+        const [pulse, setPulse] = useState(0);
+        useEffect(() => { const t = setInterval(() => setPulse(p => p + 1), 2400); return () => clearInterval(t); }, []);
+        return html`<div class="relative">
+            <div class="absolute -inset-4 bg-gradient-to-br from-brand-400/30 via-pink-400/30 to-duck-400/30 blur-2xl rounded-[2rem]"></div>
+            <div class="relative rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white/60 shadow-glow p-7">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Saldo total</div>
+                        <div class="font-display text-4xl font-extrabold mt-1 tabular-nums">₡ 8 591 320 <span class="text-lg text-slate-400">,42</span></div>
+                    </div>
+                    <span class=${"inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-soft transition-transform " + (pulse % 2 ? "scale-110" : "scale-100")}>
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </span>
+                </div>
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <${Stat} num="37,56%" label="Mercado financiero" accent="text-brand-600" />
+                    <${Stat} num="27 años" label="Experiencia" accent="text-pink-600" />
+                    <${Stat} num="₡859B" label="En administración" accent="text-emerald-600" />
+                    <${Stat} num="178 719" label="Inversionistas" accent="text-duck-600" />
+                </div>
+                <div class="mt-6 pt-5 border-t border-slate-200 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="h-8 w-8 rounded-full bg-gradient-to-br from-brand-600 to-duck-500 text-white text-xs font-bold flex items-center justify-center">PC</div>
+                        <span class="text-sm font-medium text-slate-700">Cuenta verificada</span>
+                    </div>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">● En vivo</span>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    const products = [
+        { icon: 'M12 2v20M5 9h14M5 15h14', title: 'Patitos Cash', tag: 'Liquidez', color: 'from-emerald-400 to-teal-500', desc: 'Tu dinero disponible 24/7. Rendimientos diarios sin pegarte la pata.' },
+        { icon: 'M3 12l4-4 4 4 4-4 6 6 M21 14V8h-6', title: 'Patitos Invest', tag: 'Crecimiento', color: 'from-brand-500 to-pink-500', desc: 'Diversifica con ETFs globales, BN ETF 500 y BN ETF Bitcoin desde un solo dashboard.' },
+        { icon: 'M3 21h18 M5 21V8l7-5 7 5v13 M9 21v-7h6v7', title: 'Patitos Empresarial', tag: 'Tesorería', color: 'from-duck-500 to-orange-500', desc: 'Soluciones para tesoreros corporativos. Reporting, multi-firma y APIs.' },
+        { icon: 'M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z', title: 'Patitos Care', tag: 'Soporte', color: 'from-sky-500 to-indigo-500', desc: 'Atención por chat con humanos, no bots. De lunes a domingo, en tu idioma.' }
+    ];
+
+    function Product({ p, i }) {
+        const [hover, setHover] = useState(false);
+        return html`<div onMouseEnter=${() => setHover(true)} onMouseLeave=${() => setHover(false)}
+            class="group relative rounded-3xl bg-white/80 backdrop-blur border border-slate-200 p-7 shadow-soft hover:shadow-glow transition cursor-pointer overflow-hidden">
+            <div class=${"absolute -top-12 -right-12 h-36 w-36 rounded-full blur-3xl transition-opacity bg-gradient-to-br " + p.color + (hover ? " opacity-50" : " opacity-0")}></div>
+            <div class=${"relative inline-flex h-12 w-12 items-center justify-center rounded-2xl text-white bg-gradient-to-br " + p.color + " shadow-soft"}>
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d=${p.icon} /></svg>
+            </div>
+            <div class="relative mt-5 flex items-center gap-2">
+                <h3 class="font-display text-xl font-bold">${p.title}</h3>
+                <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${p.tag}</span>
+            </div>
+            <p class="relative mt-2 text-sm text-slate-600 leading-relaxed">${p.desc}</p>
+            <div class="relative mt-5 flex items-center gap-1 text-sm font-semibold text-brand-600 group-hover:gap-2 transition-all">
+                Conocer más
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+        </div>`;
+    }
+
+    function Products() {
+        return html`<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            ${products.map((p, i) => html`<${Product} key=${i} p=${p} i=${i} />`)}
+        </div>`;
+    }
+
+    createRoot(document.getElementById('hero-card')).render(html`<${HeroCard} />`);
+    createRoot(document.getElementById('products')).render(html`<${Products} />`);
+</script>

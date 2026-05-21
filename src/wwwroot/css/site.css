@@ -1,0 +1,16 @@
+/* Patitos Corp — minimal overrides on top of Tailwind */
+html, body { font-feature-settings: 'cv02','cv03','cv04','cv11'; }
+::selection { background: #ddd6fe; color: #4c1d95; }
+
+/* Smooth scroll for anchor jumps */
+html { scroll-behavior: smooth; }
+
+/* Subtle animation for background gradient blobs */
+@keyframes float-slow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.animate-float { animation: float-slow 8s ease-in-out infinite; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(124,58,237,.2); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,.4); background-clip: padding-box; border: 2px solid transparent; }

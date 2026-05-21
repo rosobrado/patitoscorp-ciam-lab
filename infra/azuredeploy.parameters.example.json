@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appName":      { "value": "extid-lab-mydemo" },
+    "location":     { "value": "westeurope" },
+    "skuName":      { "value": "B1" },
+    "ciamTenantId": { "value": "<your-ciam-tenant-id>" },
+    "ciamClientId": { "value": "<your-app-registration-client-id>" },
+    "ciamDomain":   { "value": "<yourtenant>.ciamlogin.com" }
+  }
+}

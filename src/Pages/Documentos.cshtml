@@ -1,0 +1,172 @@
+@page
+@model DocumentosModel
+@{
+    ViewData["Title"] = "Mi portafolio";
+    var user = HttpContext.Items["user"] as BNFondosLab.SiteUser;
+    var isAuth = user != null;
+    var docsJson = System.Text.Json.JsonSerializer.Serialize(Model.Docs);
+}
+
+@if (!isAuth)
+{
+    <section class="max-w-3xl mx-auto px-6 py-24 text-center">
+        <div class="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500 shadow-glow">
+            <svg class="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h1 class="mt-6 font-display text-4xl font-extrabold">Acceso restringido</h1>
+        <p class="mt-4 text-slate-600 max-w-xl mx-auto leading-relaxed">Tu portafolio está protegido con autenticación moderna. Inicia sesión con Google, Microsoft o tu correo para ver tus fondos, rendimientos y documentos.</p>
+        <a href="/Account/Login?returnUrl=/Documentos" class="mt-8 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-slate-900 text-white font-semibold shadow-glow hover:bg-brand-700 transition">
+            Iniciar sesión
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+    </section>
+}
+else
+{
+    <section class="max-w-7xl mx-auto px-6 lg:px-10 pt-12 pb-6">
+        <div class="text-xs text-slate-500 mb-3"><a href="/" class="hover:text-brand-600">Inicio</a> <span class="mx-1">›</span> <span>Mi portafolio</span></div>
+        <h1 class="font-display text-4xl lg:text-5xl font-extrabold tracking-tight">Hola, @user!.DisplayName 👋</h1>
+        <p class="mt-2 text-slate-600">Aquí está el resumen de tu cuenta y los documentos disponibles.</p>
+    </section>
+
+    <div id="dashboard"
+         data-name="@user!.DisplayName"
+         data-email="@user.Email"
+         data-idp="@user.IdentityProvider"
+         data-claims='@System.Text.Json.JsonSerializer.Serialize(user.Claims.Select(c => new { type = c.Type, value = c.Value }))'
+         data-docs='@docsJson'>
+    </div>
+
+    <script type="module">
+        import { createRoot } from 'react-dom/client';
+        import { createElement, useState, useMemo } from 'react';
+        import htm from 'htm';
+        const html = htm.bind(createElement);
+
+        const root = document.getElementById('dashboard');
+        const data = {
+            name: root.dataset.name,
+            email: root.dataset.email,
+            idp: root.dataset.idp,
+            claims: JSON.parse(root.dataset.claims || '[]'),
+            docs: JSON.parse(root.dataset.docs || '[]')
+        };
+
+        const idpLabel = (idp) => {
+            if (!idp) return 'Email';
+            if (idp.includes('google')) return 'Google';
+            if (idp.includes('microsoft') || idp.includes('live')) return 'Microsoft';
+            if (idp.includes('facebook')) return 'Facebook';
+            return idp;
+        };
+
+        function MetricCard({ label, value, sub, accent }) {
+            return html`<div class="rounded-2xl bg-white/80 backdrop-blur border border-slate-200 p-5 shadow-soft">
+                <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">${label}</div>
+                <div class=${"font-display text-3xl font-extrabold mt-2 tabular-nums " + (accent || 'text-slate-900')}>${value}</div>
+                ${sub && html`<div class="text-xs text-slate-500 mt-1">${sub}</div>`}
+            </div>`;
+        }
+
+        function ProfileCard() {
+            const [showClaims, setShowClaims] = useState(false);
+            const initials = (data.name || 'U').split(' ').filter(Boolean).slice(0,2).map(p => p[0].toUpperCase()).join('');
+            return html`<div class="rounded-3xl bg-white/85 backdrop-blur border border-slate-200 p-6 shadow-soft">
+                <div class="flex items-center gap-4">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-brand-600 via-pink-500 to-duck-500 text-white text-xl font-display font-extrabold flex items-center justify-center shadow-glow">${initials}</div>
+                    <div class="min-w-0">
+                        <div class="font-display font-bold text-lg truncate">${data.name}</div>
+                        <div class="text-sm text-slate-500 truncate">${data.email}</div>
+                    </div>
+                </div>
+                <div class="mt-5 flex items-center gap-2 flex-wrap">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Verificado
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+                        Identidad: ${idpLabel(data.idp)}
+                    </span>
+                </div>
+                <button onClick=${() => setShowClaims(c => !c)} class="mt-5 text-xs font-semibold text-brand-700 hover:text-brand-900 flex items-center gap-1">
+                    ${showClaims ? 'Ocultar' : 'Ver'} claims del token (${data.claims.length})
+                    <svg class=${"h-3.5 w-3.5 transition-transform " + (showClaims ? 'rotate-180' : '')} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                ${showClaims && html`<div class="mt-3 max-h-72 overflow-auto rounded-xl border border-slate-200 bg-slate-50/60">
+                    <table class="w-full text-xs">
+                        <thead class="bg-slate-100 text-slate-600 sticky top-0">
+                            <tr><th class="text-left px-3 py-2 font-semibold">Tipo</th><th class="text-left px-3 py-2 font-semibold">Valor</th></tr>
+                        </thead>
+                        <tbody>
+                            ${data.claims.map((c, i) => html`<tr key=${i} class="border-t border-slate-200">
+                                <td class="px-3 py-1.5 font-mono text-[10px] text-slate-500 align-top break-all">${c.type}</td>
+                                <td class="px-3 py-1.5 font-mono text-[11px] text-slate-800 align-top break-all">${c.value}</td>
+                            </tr>`)}
+                        </tbody>
+                    </table>
+                </div>`}
+            </div>`;
+        }
+
+        function DocCard({ doc }) {
+            return html`<a href=${doc.Url} target="_blank" rel="noopener"
+                class="group rounded-2xl bg-white/80 backdrop-blur border border-slate-200 p-5 shadow-soft hover:shadow-glow hover:border-brand-300 transition flex items-start gap-4">
+                <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-pink-100 text-brand-700 shrink-0">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-display font-bold text-slate-900 leading-snug">${doc.Title}</div>
+                    <div class="text-xs text-slate-500 mt-1">${doc.Meta}</div>
+                </div>
+                <svg class="h-5 w-5 text-slate-300 group-hover:text-brand-600 group-hover:translate-x-0.5 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>`;
+        }
+
+        function Dashboard() {
+            const [q, setQ] = useState('');
+            const filtered = useMemo(() => {
+                const s = q.trim().toLowerCase();
+                return s ? data.docs.filter(d => (d.Title + ' ' + d.Meta).toLowerCase().includes(s)) : data.docs;
+            }, [q]);
+            return html`<div class="max-w-7xl mx-auto px-6 lg:px-10">
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <${MetricCard} label="Patitos Cash ¢" value="₡ 4 312 050" sub="+ ₡ 8 240 hoy" accent="text-emerald-600" />
+                    <${MetricCard} label="Patitos Invest" value="$ 7 215.40" sub="+ 2,84% mes" accent="text-brand-600" />
+                    <${MetricCard} label="Rendimiento anual" value="9,12%" sub="Promedio últimos 12m" accent="text-duck-600" />
+                </div>
+
+                <div class="mt-8 grid lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex items-center justify-between gap-3 flex-wrap">
+                            <div>
+                                <h2 class="font-display text-2xl font-extrabold tracking-tight">Documentos</h2>
+                                <p class="text-sm text-slate-500">Prospectos, reportes y comunicados oficiales.</p>
+                            </div>
+                            <div class="relative w-full sm:w-72">
+                                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input value=${q} onInput=${e => setQ(e.target.value)} type="text" placeholder="Buscar documento…"
+                                    class="w-full pl-10 pr-4 py-2.5 rounded-full bg-white border border-slate-200 text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 transition" />
+                            </div>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            ${filtered.map((d, i) => html`<${DocCard} key=${i} doc=${d} />`)}
+                            ${filtered.length === 0 && html`<div class="sm:col-span-2 text-center text-sm text-slate-500 py-12 rounded-2xl border border-dashed border-slate-300">Sin resultados para "${q}"</div>`}
+                        </div>
+                    </div>
+                    <aside class="space-y-4">
+                        <${ProfileCard} />
+                        <div class="rounded-3xl p-6 text-white relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-pink-500 shadow-glow">
+                            <div class="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-duck-500/30 blur-2xl"></div>
+                            <div class="relative">
+                                <div class="text-xs font-semibold uppercase tracking-wider text-white/80">¿Sabías?</div>
+                                <p class="mt-2 font-display text-lg font-bold leading-snug">Estás autenticado vía Microsoft Entra External ID con tu identidad de ${idpLabel(data.idp)}.</p>
+                                <p class="mt-3 text-sm text-white/85">Tu sesión está protegida con OIDC y EasyAuth en Azure App Service.</p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>`;
+        }
+
+        createRoot(root).render(html`<${Dashboard} />`);
+    </script>
+}
