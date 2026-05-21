@@ -12,6 +12,8 @@ End-to-end lab that deploys a fully-branded **Microsoft Entra External ID (CIAM)
 | --- |
 | ![Branded CIAM sign-in](docs/images/verify-ciam.png) |
 
+> 🚀 **Live demo:** [extid-lab-z6px9l.azurewebsites.net](https://extid-lab-z6px9l.azurewebsites.net) — try the public landing page, click *Iniciar sesión*, register a brand-new account (or bring your own identity), and you'll land on the gated `/Documentos` portfolio.
+
 ## Use case & user flow
 
 Reference implementation for **Customer Identity & Access Management (CIAM)** using **Microsoft Entra External ID** as the identity provider for a customer-facing web app. The fictional brand "Patitos Corp" is a digital-finance demo (cash, invest, ETFs, etc.) used as the canvas to showcase how a real consumer product would integrate sign-in/sign-up, session management, and gated content.
