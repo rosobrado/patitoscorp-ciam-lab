@@ -6,51 +6,51 @@
 
 End-to-end lab that deploys a fully-branded **Microsoft Entra External ID (CIAM)** sign-in experience in front of an ASP.NET Core 8 Razor Pages app on **Azure App Service**, with a custom OIDC identity provider, Key Vault for the client secret, EasyAuth, and Microsoft Graph branding (banner, square logos, gradient background).
 
-> The lab ships with a **fictional brand ("Patitos Corp")** as default sample copy. Everything brand-related is parameterized — see [Customize for your brand](#-customize-for-your-brand).
+> The lab ships with a **fictional internet bank ("Patitos Bank")** as default sample copy: customers open their account in minutes through External ID. Everything brand-related is parameterized — see [Customize for your brand](#-customize-for-your-brand).
 
 | Final result |
 | --- |
 | ![Branded CIAM sign-in](docs/images/verify-ciam.png) |
 
-> 🚀 **Live demo:** [extid-lab-z6px9l.azurewebsites.net](https://extid-lab-z6px9l.azurewebsites.net) — try the public landing page, click *Iniciar sesión*, register a brand-new account (or bring your own identity), and you'll land on the gated `/Documentos` portfolio.
+> 🚀 **Live demo:** [extid-lab-z6px9l.azurewebsites.net](https://extid-lab-z6px9l.azurewebsites.net) — visit the public bank landing, click *Abrir mi cuenta gratis*, open a brand-new account (or bring your own identity), and you'll land on the gated `/Cuenta` banking dashboard.
 
 ## Use case & user flow
 
-Reference implementation for **Customer Identity & Access Management (CIAM)** using **Microsoft Entra External ID** as the identity provider for a customer-facing web app. The fictional brand "Patitos Corp" is a digital-finance demo (cash, invest, ETFs, etc.) used as the canvas to showcase how a real consumer product would integrate sign-in/sign-up, session management, and gated content.
+Reference implementation for **Customer Identity & Access Management (CIAM)** using **Microsoft Entra External ID** as the identity provider for a customer-facing web app. The fictional brand **Patitos Bank** is a 100% digital internet-banking demo: a customer self-opens their account in three minutes by signing up at the public landing page — no branches, no paperwork, no invitations.
 
 **Audience:** identity architects, developers, and PoC builders who need a runnable sample showing:
 
 - External ID tenant + customer-facing user flow (sign-up + sign-in in one).
 - App Service hosting with **EasyAuth (custom OIDC)** — no auth code in the app.
-- Public marketing pages vs. authenticated portfolio pages.
+- Public marketing pages (bank landing + product catalogue) vs. authenticated banking dashboard.
 - Logout via the platform's `/.auth/logout` endpoint.
-- Branding parameterized via `appsettings.json` so the same lab can be rebranded without touching code.
+- Branding parameterized via `appsettings.json` so the same lab can be rebranded for any vertical (bank, fintech, retail, B2C SaaS).
 
-### Self-service registration & Bring Your Own Identity (BYOI)
+### Self-service account opening & Bring Your Own Identity (BYOI)
 
-The lab is **open to any visitor**: there is no pre-provisioning, no invitation, no admin approval. Anyone hitting *Iniciar sesión* who doesn't yet have an account can self-register from the same screen.
+The lab is **open to any visitor**: there is no pre-provisioning, no invitation, no admin approval. Anyone hitting *Abrir mi cuenta gratis* who doesn't yet have an account can self-register from the same screen — exactly how a modern internet bank onboards a new customer.
 
 Two ways in:
 
-- **Create a brand-new local account** — email + password (with email OTP verification). The user is created on the fly inside the External ID tenant and lives there as a customer identity.
-- **Bring your own identity (BYOI)** — sign in with an existing identity from a federated identity provider (Google, Facebook, Apple, GitHub, generic OIDC/SAML, or any other IdP configured on the tenant's user flow). No new password is created; External ID federates the existing credential and stores a linked customer profile.
+- **Open a brand-new local account** — email + password (with email OTP verification). The customer record is created on the fly inside the External ID tenant.
+- **Bring your own identity (BYOI)** — sign in with an existing identity from a federated identity provider (Google, Microsoft consumer, Facebook, Apple, GitHub, generic OIDC/SAML, or any other IdP configured on the tenant's user flow). No new password is created; External ID federates the existing credential and stores a linked customer profile.
 
-Both paths land on the same authenticated session and the same `/Documentos` page — the app does not care *how* the user authenticated, only that EasyAuth issued a valid session.
+Both paths land on the same authenticated session and the same `/Cuenta` banking dashboard — the app does not care *how* the customer authenticated, only that EasyAuth issued a valid session.
 
 ### Flow diagram
 
 ```mermaid
 flowchart LR
   A[Visitor lands on /] --> B{Authenticated?}
-  B -- No --> C[Public home: hero, products, CTA]
-  C --> D[Click 'Mi portafolio' / 'Iniciar sesión']
+  B -- No --> C[Public bank landing<br/>hero · productos · CTA]
+  C --> D["Click 'Abrir mi cuenta gratis'"]
   D --> E[/Account/Login → loginUrl/]
   E --> F[EasyAuth redirects to External ID]
-  F --> G[patitoscorp.ciamlogin.com<br/>sign-up or sign-in]
+  F --> G[patitoscorp.ciamlogin.com<br/>sign-up or sign-in<br/>Google · Microsoft · email]
   G --> H[OIDC callback /.auth/login/ExternalID/callback]
   H --> I[EasyAuth issues session cookie]
-  I --> J[/Documentos — gated portfolio/]
-  J --> K[Click 'Cerrar sesión']
+  I --> J[/Cuenta — banking dashboard<br/>saldos · movimientos · claims]
+  J --> K["Click 'Cerrar sesión'"]
   K --> L[GET /Account/Logout → /.auth/logout]
   L --> M[Session cleared, redirect to /]
   B -- Yes --> J
@@ -58,20 +58,20 @@ flowchart LR
 
 ### Step by step
 
-1. **Anonymous landing (`/`)** — Marketing home renders product cards (Patitos Cash, Invest, Empresarial, Care) and a CTA. No auth required.
-2. **Trigger sign-in** — User clicks *Iniciar sesión* or tries to access `/Documentos`. App routes to `/Account/Login` which builds the EasyAuth login URL with `post_login_redirect_uri`.
-3. **Federated auth at External ID** — EasyAuth redirects the browser to the CIAM tenant (`patitoscorp.ciamlogin.com`) where the user **signs up or signs in** via the configured user flow (email + password / OTP).
+1. **Anonymous landing (`/`)** — Bank marketing home renders product cards (Cuenta Pato corriente, Tarjeta Pato débito Visa, Patitos Save ahorro, Crédito Pato préstamo personal) and a CTA *Abrir mi cuenta gratis*. No auth required.
+2. **Trigger sign-up / sign-in** — Customer clicks *Abrir mi cuenta gratis* or tries to access `/Cuenta`. App routes to `/Account/Login` which builds the EasyAuth login URL with `post_login_redirect_uri=/Cuenta`. The custom OIDC config forwards `prompt` and `domain_hint` query params so the buttons can jump straight to Google / Microsoft or to the create-account screen.
+3. **Federated auth at External ID** — EasyAuth redirects the browser to the CIAM tenant (`patitoscorp.ciamlogin.com`) where the customer **signs up or signs in** via the configured user flow (email + password / OTP, or BYOI).
 4. **Callback + session** — External ID returns the auth code to `/.auth/login/ExternalID/callback`. EasyAuth exchanges it for tokens and sets the `AppServiceAuthSession` cookie. The app receives identity claims via request headers.
-5. **Authenticated portfolio (`/Documentos`)** — Protected page reads claims and renders the user's mock portfolio (balance cards, document list, claims viewer).
-6. **Logout** — User clicks *Cerrar sesión* (anchor → `GET /Account/Logout`). The page redirects to `/.auth/logout?post_logout_redirect_uri=/`, clearing the EasyAuth cookie and bouncing back to the public home.
+5. **Authenticated banking dashboard (`/Cuenta`)** — Protected page reads claims and renders the customer's banking experience: three account cards (Cuenta Pato Corriente CRC, Cuenta Pato USD, Patitos Save), a transactions table with SINPE transfers, salary deposits, ATM withdrawals, USD purchases, and an educational ID-token claims viewer.
+6. **Logout** — Customer clicks *Cerrar sesión* (anchor → `GET /Account/Logout`). The page redirects to `/.auth/logout?post_logout_redirect_uri=/`, clearing the EasyAuth cookie and bouncing back to the public home.
 
 ### What the lab demonstrates
 
 - **Zero auth code in the app** — all token handling lives in EasyAuth; the app just reads claim headers.
-- **Custom OIDC IdP config** pointed at an External ID tenant (not the built-in Microsoft provider).
-- **Mixed public/private routing** in the same app.
+- **Custom OIDC IdP config** pointed at an External ID tenant (not the built-in Microsoft provider), with `prompt=create` for "open account" and `domain_hint=google.com / live.com` for one-click social sign-up.
+- **Mixed public/private routing** in the same app (bank landing public, `/Cuenta` gated).
 - **Idempotent logout** via GET (avoids antiforgery 400s).
-- **Brand abstraction** — change the `Branding` section in `appsettings.json` to re-skin the lab for any tenant/customer demo.
+- **Brand abstraction** — change the `Branding` section in `appsettings.json` to re-skin the lab for any tenant/vertical demo.
 
 ---
 
@@ -118,7 +118,7 @@ Copy `.env.example` to `.env` (or export the variables in your shell), edit, the
 
 ### 4. Demo content (optional)
 
-The hero copy on `Pages/Index.cshtml`, the portfolio mock-up on `Pages/Documentos.cshtml` and the four product cards are sample content. They are flagged with a Razor comment at the top of each page — feel free to delete or rewrite. Brand-specific text inside those samples (e.g. "Patitos Cash") is illustrative filler.
+The hero copy on `Pages/Index.cshtml`, the banking dashboard on `Pages/Documentos.cshtml` (served at `/Cuenta`) and the four product cards are sample content. They are flagged with a Razor comment at the top of each page — feel free to delete or rewrite. Brand-specific text inside those samples (e.g. "Cuenta Pato", "Patitos Save") is illustrative filler.
 
 ---
 

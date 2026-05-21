@@ -4,16 +4,26 @@ namespace CiamLabApp.Pages;
 
 public class DocumentosModel : PageModel
 {
-    public record Doc(string Title, string Meta, string Url);
+    public record Account(string Name, string Number, string Currency, decimal Balance, decimal AvailableBalance);
+    public record Transaction(string Date, string Description, string Category, decimal Amount, string Currency);
 
-    public List<Doc> Docs { get; } = new()
+    public List<Account> Accounts { get; } = new()
     {
-        new("Prospecto Patitos Cash ¢", "Fondo de liquidez en colones · PDF · v.2026-04", "#"),
-        new("Prospecto Patitos Cash $", "Fondo de liquidez en dólares · PDF · v.2026-04", "#"),
-        new("Patitos ETF 500 — Hoja informativa", "Fondo de inversión global · PDF · 2026", "#"),
-        new("Patitos ETF Bitcoin — Hoja informativa", "Fondo de inversión cripto · PDF · 2026", "#"),
-        new("Reporte mensual — Marzo 2026", "Rendimientos y composición de portafolio", "#"),
-        new("Hechos relevantes Q1-2026", "Comunicados oficiales", "#"),
+        new("Cuenta Pato Corriente",  "CR21-0151-0000-1234-5678", "CRC", 4_312_050.42m, 4_312_050.42m),
+        new("Cuenta Pato USD",        "CR21-0151-0000-9876-5432", "USD", 7_215.40m,     7_215.40m),
+        new("Patitos Save · Vacaciones", "CR21-0151-0000-1111-2222", "CRC", 850_000.00m, 0m),
+    };
+
+    public List<Transaction> Transactions { get; } = new()
+    {
+        new("2026-05-19", "Transferencia SINPE — Mariana R.",        "Transferencia",  -45_000m, "CRC"),
+        new("2026-05-19", "Patitos Save — Aporte programado",        "Ahorro",         -25_000m, "CRC"),
+        new("2026-05-18", "Pago de salario — Patitos Corp",          "Ingreso",      1_250_000m, "CRC"),
+        new("2026-05-17", "Compra — Café del Parque",                "Restaurantes",     -3_400m, "CRC"),
+        new("2026-05-17", "Compra — Spotify Premium",                "Suscripciones",    -2_950m, "CRC"),
+        new("2026-05-16", "Retiro cajero — ATH Bulevar",              "Efectivo",       -50_000m, "CRC"),
+        new("2026-05-15", "Devolución — Tienda Verde",                "Reembolso",       12_500m, "CRC"),
+        new("2026-05-14", "Compra USD — AWS Cloud",                  "Servicios",         -42.18m, "USD"),
     };
 
     public void OnGet() { }
